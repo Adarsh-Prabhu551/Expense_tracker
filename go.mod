@@ -9,3 +9,4 @@ require (
 	github.com/lib/pq v1.12.3 // indirect
 	golang.org/x/text v0.29.0 // indirect
 )
+
