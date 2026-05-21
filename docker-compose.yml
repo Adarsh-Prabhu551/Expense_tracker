@@ -11,7 +11,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./migrations:/migrations
+      - ./migrations:/docker-entrypoint-initdb.d
 
   app:
     build: .

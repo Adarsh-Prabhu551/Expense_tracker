@@ -7,11 +7,11 @@ import (
 )
 
 type User struct {
-	ID      int
-	Name    string
-	Income  float64
-	Created time.Time
-	Updated time.Time
+	ID      int       `json:"id"`
+	Name    string    `json:"name"`
+	Income  float64   `json:"income"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
 }
 
 func CreateUsers(db *sql.DB, name string, income float64) (int, error) {
@@ -23,6 +23,15 @@ func CreateUsers(db *sql.DB, name string, income float64) (int, error) {
 		log.Fatal(err)
 	}
 	return pk, nil
+}
+
+func GetUserByID(db *sql.DB, id int) (User, error) {
+	var u User
+	err := db.QueryRow("SELECT * FROM users WHERE id=$1", id).Scan(&u.ID, &u.Name, &u.Income, &u.Created, &u.Updated)
+	if err != nil {
+		return User{}, err
+	}
+	return u, nil
 }
 
 func GetAllUsers(db *sql.DB) ([]User, error) {

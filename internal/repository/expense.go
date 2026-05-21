@@ -7,12 +7,12 @@ import (
 )
 
 type Expenses struct {
-	ID      int
-	UserId  int
-	Type    string
-	Amount  float64
-	Created time.Time
-	Updated time.Time
+	ID      int       `json:"id"`
+	UserId  int       `json:"user_id"`
+	Type    string    `json:"type"`
+	Amount  float64   `json:"amount"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
 }
 
 func CreateExpense(db *sql.DB, user_id int, expense_type string, amount float64) (int, error) {
@@ -52,8 +52,8 @@ func UpdateExpense(db *sql.DB, exp_type string, amount float64) (int64, error) {
 	return rows, nil
 }
 
-func DeleteExpense(db *sql.DB, exp_type string) (int64, error) {
-	result, err := db.Exec("DELETE FROM expense WHERE exp_type=$1", exp_type)
+func DeleteExpense(db *sql.DB, id string) (int64, error) {
+	result, err := db.Exec("DELETE FROM expense WHERE id=$1", id)
 	if err != nil {
 		return 0, err
 	}
