@@ -49,3 +49,18 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(user)
 }
+
+func (h *Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Name string `json:"name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, "invalid body", http.StatusBadRequest)
+	}
+	user, err := repository.GetUserName(h.db, body.Name)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]int{"id": user.ID})
+}

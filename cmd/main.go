@@ -22,6 +22,7 @@ func main() {
 
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/", h.CreateUser)
+		r.Post("/login", h.LoginUser)
 		r.Get("/{id}", h.GetUser)
 	})
 
