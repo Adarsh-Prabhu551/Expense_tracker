@@ -1,16 +1,25 @@
-# Expense Tracker (Go + Docker)
+# Expense Tracker
 
-## Description
-A simple CLI-based expense tracker built using Go.
+A mobile expense tracker built with Golang, PostgreSQL, Docker, and React Native.
 
 ## Features
-- Add users
-- Track expenses
-- Calculate savings
+- Add expenses
+- View expense list with details
+- User profile with salary and savings (in progress)
 
-## Run locally
-go run main.go
+## Tech Stack
+- **Backend:** Golang
+- **Database:** PostgreSQL
+- **Containerization:** Docker
+- **Frontend:** React Native
 
-## Run with Docker
-docker build -t expense-tracker .
-docker run -it expense-tracker
+## Running Locally
+
+### Backend
+docker-compose up
+
+### Frontend
+npx expo start
+
+## Status
+Active development — building in public on LinkedIn.
