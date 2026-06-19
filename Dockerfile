@@ -7,12 +7,18 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o expense-tracker ./cmd/
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-w -s" \
+    -o expense-tracker ./cmd/
 
-FROM alpine:latest
+FROM alpine:3.21
+
+RUN apk --no-cache add ca-certificates tzdata
 
 WORKDIR /app
 
 COPY --from=builder /app/expense-tracker .
+
+EXPOSE 8080
 
 CMD ["./expense-tracker"]

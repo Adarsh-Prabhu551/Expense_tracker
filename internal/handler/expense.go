@@ -11,16 +11,17 @@ import (
 
 func (h *Handler) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		UserID int     `json:"user_id"`
-		Type   string  `json:"type"`
-		Amount float64 `json:"amount"`
+		UserID      int     `json:"user_id"`
+		Category    string  `json:"category"`
+		Description string  `json:"description"`
+		Amount      float64 `json:"amount"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
 
-	id, err := repository.CreateExpense(h.db, body.UserID, body.Type, body.Amount)
+	id, err := repository.CreateExpense(h.db, body.UserID, body.Category, body.Description, body.Amount)
 	if err != nil {
 		http.Error(w, "could not create expense", http.StatusInternalServerError)
 		return

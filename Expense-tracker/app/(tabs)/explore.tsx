@@ -5,19 +5,21 @@ import {
   ActivityIndicator, Alert,
   KeyboardAvoidingView, Platform,
   ScrollView, StyleSheet,
-  Text, TextInput, TouchableOpacity
+  Text, TextInput, Touchable, TouchableOpacity, View
 } from 'react-native';
 
-const API = 'http://10.11.186.229:8080';
+const API = 'http://192.168.1.2:8080'
 
 export default function AddExpenseScreen() {
   const router = useRouter();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState('');
+  const [category, setCategory]=useState('');
 
   async function handleSubmit() {
     if (!amount) return Alert.alert('Error', 'Amount is required');
+    if (!category) return Alert.alert('Error', 'Please select a category');
     const parsed = parseFloat(amount);
     if (isNaN(parsed) || parsed <= 0) return Alert.alert('Error', 'Enter a valid amount');
 
@@ -31,12 +33,14 @@ export default function AddExpenseScreen() {
         body: JSON.stringify({
           user_id: Number(userId),
           amount: parsed,
-          type: description || 'general',
+          description: description,
+          category: category || 'General',
         }),
       });
-      if (!res.ok) throw new Error('Failed to add');
+      console.log(res.status);
+      console.log(await res.text());
       Alert.alert('Done', 'Expense added!', [{ text: 'OK', onPress: () => {
-        setAmount(''); setDescription('');
+        setAmount(''); setDescription(''); setCategory('');
         router.replace('/(tabs)');
       }}]);
     } catch (e: any) {
@@ -54,6 +58,20 @@ export default function AddExpenseScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.heading}>Add Expense</Text>
 
+        <Text style={styles.label}>Category</Text>
+        <View style={styles.chips}>
+          {['FOOD','TRANSPORT','HOUSING','OTHER'].map(cat => (
+          <TouchableOpacity
+            key={cat}
+            style={[styles.chip, category ===cat && styles.chipActive]}
+            onPress={()=> setCategory(cat)}
+          >
+            <Text style={[styles.chipText, category === cat && styles.chipTextActive]}>
+              {cat}
+            </Text>
+          </TouchableOpacity>
+          ))}
+        </View>
         <Text style={styles.label}>Expense Type</Text>
         <TextInput 
           style={styles.input} placeholder="description" placeholderTextColor="#555"

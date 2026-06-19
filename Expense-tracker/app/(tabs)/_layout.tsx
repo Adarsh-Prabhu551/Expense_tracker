@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout(){
@@ -10,8 +11,24 @@ export default function TabLayout(){
         tabBarInactiveTintColor:'#555'
       }}
     >
-      <Tabs.Screen name="index" options={{ title:'Expenses', tabBarIcon: ()=>null}} />
-      <Tabs.Screen name="explore" options={{title:'Add Expense', tabBarIcon: () => null}} />
+      
+      <Tabs.Screen 
+        name="index" 
+        options={{ title:'Home', 
+        tabBarIcon: ({color, size}) => (
+          <Ionicons name="home" size={size} color={color} />
+          ),
+        }} 
+      />
+      <Tabs.Screen 
+        name="explore"
+        options={{title:'Expenses',
+        tabBarIcon: ({color, size}) => (
+          <Ionicons name="wallet" size={size} color={color} />
+        ),
+        }} 
+      />
+      
     </Tabs>
   );
 }

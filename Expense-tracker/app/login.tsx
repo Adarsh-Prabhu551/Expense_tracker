@@ -7,7 +7,7 @@ import {
     StyleSheet, Text, TextInput, TouchableOpacity
 } from 'react-native';
 
-const API= 'http://10.11.186.229:8080'
+const API = 'http://192.168.1.2:8080'
 
 export default function LoginScreen(){
     const router=useRouter();

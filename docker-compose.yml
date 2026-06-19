@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:alpine
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass
@@ -14,6 +14,8 @@ services:
       retries: 5
     volumes:
       - ./migrations:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   app:
     build: .
@@ -22,5 +24,10 @@ services:
         condition: service_healthy
     environment:
       DB_URL: postgres://postgres:pass@db:5432/gopgtest?sslmode=disable
+      PORT: "8080"
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:   #declares the user defined volume used above 
