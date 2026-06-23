@@ -2,25 +2,33 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID      int       `json:"id"`
-	Name    string    `json:"name"`
-	Income  float64   `json:"income"`
-	Created time.Time `json:"created"`
-	Updated time.Time `json:"updated"`
+	ID       int       `json:"id"`
+	Name     string    `json:"name"`
+	Income   float64   `json:"income"`
+	Created  time.Time `json:"created"`
+	Updated  time.Time `json:"updated"`
+	Email    string    `json:"email"`
+	Password string    `json:"-"`
 }
 
-func CreateUsers(db *sql.DB, name string, income float64) (int, error) {
-	query := `INSERT INTO users (name, income)
-	    VALUES ($1, $2) RETURNING id`
-	var pk int
-	err := db.QueryRow(query, name, income).Scan(&pk)
+func CreateUsers(db *sql.DB, name string, income float64, email string, password string) (int, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
+	}
+
+	query := `INSERT INTO users (name, income, email, password_hash)
+	    VALUES ($1, $2, $3, $4) RETURNING id`
+	var pk int
+	err = db.QueryRow(query, name, income, email, string(hash)).Scan(&pk)
+	if err != nil {
+		return 0, err
 	}
 	return pk, nil
 }
@@ -46,7 +54,7 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 	for rows.Next() {
 		var us User
 		if err := rows.Scan(&us.ID, &us.Name, &us.Income, &us.Created, &us.Updated); err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 		user = append(user, us)
 	}
@@ -57,12 +65,12 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 
 }
 
-func GetUserName(db *sql.DB, name string) (User, error) {
-	var data User
-	err := db.QueryRow("SELECT * FROM users WHERE name=$1", name).Scan(&data.ID, &data.Name, &data.Income, &data.Created, &data.Updated)
+func GetUserByEmail(db *sql.DB, email string) (User, error) {
+	var u User
+	err := db.QueryRow("SELECT * FROM users WHERE email=$1", email).Scan(&u.ID, &u.Name, &u.Income, &u.Created, &u.Updated, &u.Email, &u.Password)
 	if err != nil {
 		return User{}, err
 	}
 
-	return data, nil
+	return u, nil
 }
