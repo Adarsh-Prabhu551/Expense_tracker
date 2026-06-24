@@ -25,6 +25,7 @@ services:
     environment:
       DB_URL: postgres://postgres:pass@db:5432/gopgtest?sslmode=disable
       PORT: "8080"
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - "8080:8080"
     restart: unless-stopped

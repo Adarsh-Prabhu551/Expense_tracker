@@ -3,11 +3,21 @@
 A mobile expense tracker built with Golang, PostgreSQL, Docker, and React Native.
 
 ## Features
+
+### Expense Management
 - Add expenses
-- View expense list with details
-- User profile with salary and savings (in progress)
+- Categorize expenses (Food, Travel, Housing etc.)
+- View all expenses
+- Filter expenses by category
+
+### User Management
+- User profile
+- Salary tracking (in progress)
+- Savings tracking (in progress)
+- Authentication system (currently under development)
 
 ## Tech Stack
+
 - **Backend:** Golang
 - **Database:** PostgreSQL
 - **Containerization:** Docker
@@ -16,10 +26,5 @@ A mobile expense tracker built with Golang, PostgreSQL, Docker, and React Native
 ## Running Locally
 
 ### Backend
+```bash
 docker-compose up
-
-### Frontend
-npx expo start
-
-## Status
-Active development — building in public on LinkedIn.
