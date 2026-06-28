@@ -2,9 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"expenses/internal/middleware"
 	"expenses/internal/repository"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -31,9 +31,9 @@ func (h *Handler) CreateExpense(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetExpenseByUser(w http.ResponseWriter, r *http.Request) {
-	userId, err := strconv.Atoi(chi.URLParam(r, "userId"))
-	if err != nil {
-		http.Error(w, "invalid expenses", http.StatusBadRequest)
+	userId, ok := r.Context().Value(middleware.UserIDKey).(int)
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
 		return
 	}
 	expenses, err := repository.GetExpenseByUserId(h.db, userId)
