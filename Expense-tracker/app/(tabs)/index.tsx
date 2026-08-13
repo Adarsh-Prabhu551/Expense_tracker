@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 
-const API = 'http://192.168.1.2:8080'
+const API = 'http://192.168.1.3:8080'
 
 type Expense = {
   id: number;

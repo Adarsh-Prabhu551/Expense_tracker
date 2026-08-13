@@ -8,7 +8,7 @@ import {
   Text, TextInput, Touchable, TouchableOpacity, View
 } from 'react-native';
 
-const API = 'http://192.168.1.2:8080'
+const API = 'http://192.168.1.3:8080'
 
 export default function AddExpenseScreen() {
   const router = useRouter();

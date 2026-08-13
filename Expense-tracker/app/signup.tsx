@@ -4,38 +4,40 @@ import { useState } from 'react';
 import {
     ActivityIndicator, Alert,
     KeyboardAvoidingView, Platform,
-    StyleSheet, Text, TextInput, Touchable, TouchableOpacity
+    StyleSheet, Text, TextInput, TouchableOpacity
 } from 'react-native';
 
 const API = 'http://192.168.1.3:8080'
 
-export default function LoginScreen(){
+export default function SignUpScreen(){
     const router=useRouter();
+    const [name, setName]=useState('');
+    const [income, setIncome]=useState('');
     const [email, setEmail]=useState('');
-    const [emailError, setEmailError]=useState('');
     const [password, setPassword]=useState('');
-    const [passwordError, setPasswordError]=useState('');
     const [loading, setLoading]=useState(false);
 
-    async function handleLogin(){
-        if(!email) setEmailError('Please enter your email');
-        if(!password) setPasswordError('Please enter your password');
+    async function hadnleSignup(){
+        if(!name) return Alert.alert('Error', 'Enter the name');
+        if(!income) return Alert.alert('Error', 'Enter the income')
+        if(!email) return Alert.alert('Error', 'Enter the email');
+        if(!password) return Alert.alert('Error', 'Enter the password');
         setLoading(true);
         
         try{
-            const res=await fetch(`${API}/users/login`,{
+            const res=await fetch(`${API}/users/signup`,{
                 method:'POST',
                 headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({email, password}),
+                body: JSON.stringify({name, email, password}),
             })
             const data=await res.json();
-            if (!res.ok) throw new Error(data.error || 'Login failed');
+            
+            if (!res.ok) throw new Error(data.error || 'SignUp failed');
             await AsyncStorage.setItem('user_id', String(data.id));
             router.replace('/(tabs)')
-        } catch (error: any) {
-    console.log('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    Alert.alert('Login error', error.message || 'Unknown error');
-}
+        } catch(e: any){
+            Alert.alert('Signup failed', e.message);
+        }
         finally{
             setLoading(false);
         }
@@ -47,7 +49,23 @@ export default function LoginScreen(){
           behavior={Platform.OS==='ios'?'padding':undefined}
         >
             <Text style={styles.title}>Expense Tracker</Text>
-            <Text style={styles.sub}>Sign in to continue</Text>
+            <Text style={styles.sub}>Sign up to create an account</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              placeholderTextColor="#888"
+              autoCapitalize='none'
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Income"
+              placeholderTextColor="#888"
+              autoCapitalize='none'
+              value={income}
+              onChangeText={setIncome}
+            />
             <TextInput
               style={styles.input}
               placeholder="Email"
@@ -56,7 +74,6 @@ export default function LoginScreen(){
               value={email}
               onChangeText={setEmail}
             />
-            {emailError ? <Text style={{ color: '#ef4444', fontSize: 12, marginBottom: 15, marginTop: -10 }}>{emailError}</Text> : null}
             <TextInput
               style={styles.input}
               placeholder="Password"
@@ -65,17 +82,12 @@ export default function LoginScreen(){
               value={password}
               onChangeText={setPassword}
             />
-            {passwordError ? <Text style={{ color: '#ef4444', fontSize: 12, marginBottom: 15, marginTop: -10 }}>{passwordError}</Text> : null}
-            <TouchableOpacity style={styles.btn} onPress={handleLogin} disabled={loading}>
-                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Login</Text>}
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={()=> router.push('./signup')}>
-                <Text style={styles.btnText}> Get Started </Text>
+            <TouchableOpacity style={styles.btn} onPress={hadnleSignup} disabled={loading}>
+                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Signup</Text>}
             </TouchableOpacity>
         </KeyboardAvoidingView>
     )
 }
-
 
 
 const styles = StyleSheet.create({

@@ -21,7 +21,7 @@ func main() {
 	r.Use(cors.AllowAll().Handler)
 
 	r.Route("/users", func(r chi.Router) {
-		r.Post("/", h.CreateUser)
+		r.Post("/signup", h.CreateUser)
 		r.Post("/login", h.LoginUser)
 		r.Get("/{id}", h.GetUser)
 	})
