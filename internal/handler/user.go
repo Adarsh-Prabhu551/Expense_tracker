@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Handler struct {
@@ -54,15 +55,27 @@ func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Email string `json:"email"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
+		return
 	}
 	user, err := repository.GetUserByEmail(h.db, body.Email)
 	if err != nil {
 		http.Error(w, "user not found", http.StatusNotFound)
 		return
 	}
+
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(body.Password),
+	); err != nil {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]int{"id": user.ID})
 }

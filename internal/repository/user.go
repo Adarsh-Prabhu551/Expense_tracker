@@ -67,10 +67,10 @@ func GetAllUsers(db *sql.DB) ([]User, error) {
 
 func GetUserByEmail(db *sql.DB, email string) (User, error) {
 	var u User
-	err := db.QueryRow("SELECT * FROM users WHERE email=$1", email).Scan(&u.ID, &u.Name, &u.Income, &u.Created, &u.Updated, &u.Email, &u.Password)
+	err := db.QueryRow("SELECT id, name, income, created, updated, email, password_hash FROM users WHERE email=$1", email).Scan(&u.ID, &u.Name, &u.Income, &u.Created, &u.Updated, &u.Email, &u.Password)
 	if err != nil {
 		return User{}, err
 	}
 
-	return u, nil
+	return u, err
 }

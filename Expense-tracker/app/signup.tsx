@@ -28,7 +28,7 @@ export default function SignUpScreen(){
             const res=await fetch(`${API}/users/signup`,{
                 method:'POST',
                 headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({name, email, password}),
+                body: JSON.stringify({name, income: Number(income), email, password}),
             })
             const data=await res.json();
             

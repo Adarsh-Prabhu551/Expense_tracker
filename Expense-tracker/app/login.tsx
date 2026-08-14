@@ -23,19 +23,30 @@ export default function LoginScreen(){
         setLoading(true);
         
         try{
+            console.log("LOGIN DATA:", {
+                email,
+                password,
+            });
             const res=await fetch(`${API}/users/login`,{
                 method:'POST',
                 headers:{'Content-Type':'application/json'},
                 body: JSON.stringify({email, password}),
             })
-            const data=await res.json();
-            if (!res.ok) throw new Error(data.error || 'Login failed');
-            await AsyncStorage.setItem('user_id', String(data.id));
-            router.replace('/(tabs)')
-        } catch (error: any) {
-    console.log('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-    Alert.alert('Login error', error.message || 'Unknown error');
+            const responseText = await res.text();
+
+            console.log("LOGIN STATUS:", res.status);
+console.log("LOGIN RESPONSE:", responseText);
+
+if (!res.ok) {
+    Alert.alert('Login failed', responseText);
+    return;
 }
+
+router.replace('/(tabs)');
+        } catch (error: any) {
+            console.log('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+            Alert.alert('Login error', error.message || 'Unknown error');
+        }
         finally{
             setLoading(false);
         }
